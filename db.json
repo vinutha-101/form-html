@@ -1,0 +1,14 @@
+{
+    "entries": [
+      {
+        "id": 1,
+        "name": "John Doe",
+        "age": 25,
+        "select": "BBA",
+        "city": "New York",
+        "hobbies": "Reading",
+        "gender": "Male"
+      }
+    ]
+  }
+  
