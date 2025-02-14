@@ -1,14 +1,13 @@
 {
-    "entries": [
-      {
-        "id": 1,
-        "name": "John Doe",
-        "age": 25,
-        "select": "BBA",
-        "city": "New York",
-        "hobbies": "Reading",
-        "gender": "Male"
-      }
-    ]
-  }
-  
+  "entries": [
+    {
+      "id": "c78b",
+      "name": "vinutha",
+      "age": "21",
+      "select": "BCA",
+      "city": "Bangaloreee",
+      "hobbies": "Gaming",
+      "gender": "Female"
+    }
+  ]
+}

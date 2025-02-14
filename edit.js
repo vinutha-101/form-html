@@ -1,13 +1,23 @@
 document.addEventListener("DOMContentLoaded", function () {
     const params = new URLSearchParams(window.location.search);
-    const index = params.get("index");
+    const id = params.get("id"); 
 
-    if (index !== null) {
-        let entries = JSON.parse(localStorage.getItem("entries")) || [];
-        const product = entries[index];
+    if (!id) {
+        console.error("No ID found in URL.");
+        return;
+    }
 
-        if (product) {
-            document.getElementById("index").value = index;
+    fetch(`http://localhost:3000/entries/${id}`)
+        .then(response => {
+            if (!response.ok) throw new Error("Failed to fetch entry.");
+            return response.json();
+        })
+        .then(product => {
+            if (!product) {
+                console.error("No product found for the given ID.");
+                return;
+            }
+
             document.getElementById("name").value = product.name;
             document.getElementById("age").value = product.age;
             document.getElementById("select").value = product.select;
@@ -19,16 +29,22 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 document.getElementById("gender-female").checked = true;
             }
-        }
-    }
+
+            document.getElementById("saveBtn").setAttribute("data-id", id);
+        })
+        .catch(error => console.error("Error fetching entry:", error));
 
     document.getElementById("edit-form").addEventListener("submit", function (event) {
         event.preventDefault();
 
-        let entries = JSON.parse(localStorage.getItem("entries")) || [];
-        const index = document.getElementById("index").value;
+        let id = document.getElementById("saveBtn").getAttribute("data-id");
+        if (!id) {
+            console.error("No ID found for update.");
+            return;
+        }
 
-        entries[index] = {
+        let updatedEntry = {
+            id: parseInt(id), 
             name: document.getElementById("name").value,
             age: document.getElementById("age").value,
             select: document.getElementById("select").value,
@@ -37,10 +53,20 @@ document.addEventListener("DOMContentLoaded", function () {
             gender: document.querySelector('input[name="gender"]:checked').value
         };
 
-        localStorage.setItem("entries", JSON.stringify(entries));
-
-        alert("Entry updated successfully!");
-        window.location.href = "index.html"; 
+        fetch(`http://localhost:3000/entries/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updatedEntry)
+        })
+        .then(response => {
+            if (!response.ok) throw new Error("Failed to update entry.");
+            return response.json();
+        })
+        .then(() => {
+            alert("Entry updated successfully!");
+            window.location.href = "index.html";
+        })
+        .catch(error => console.error("Error updating entry:", error));
     });
 
     document.getElementById("cancelBtn").addEventListener("click", function () {
